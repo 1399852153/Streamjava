@@ -1,0 +1,52 @@
+<script type="text/javascript" src="stream.js"></script>
+<script type="text/javascript" src="stream-opt.js"></script>
+
+<script type="text/javascript">
+	function isOdd(val){
+		return (val % 2 != 0);
+	}
+	
+	function square(val){
+		return val * val;
+	}
+	
+	function sum(v1,v2){
+		return v1 + v2;
+	}
+	
+</script>
+
+<script type="text/javascript">
+/*
+	debugger;
+	var array = [1,2,3,4,5];
+	var stream = array_to_stream(array);
+	
+	var sum = accumulate_stream(sum,0,
+			  map_stream(square,
+			  filter_stream(isOdd,stream)));
+	debugger;
+	*/
+</script>
+
+<script type="text/javascript">
+	var array = [1,2,3,4,5];
+	var stream1 = array_to_stream(array);
+	
+	var stream2 = map_stream(function(item){
+		return item * 10;
+	},stream1);
+	
+	var stream3 = map_stream(function(item){
+		return item * 10;
+	},stream2);
+	
+	debugger;
+	var stream_to_stream = cons_stream(stream1,
+							cons_stream(stream2,
+						     cons_stream(stream3,
+										 empty_stream())));
+	
+	var flatStream = flatten_stream(stream_to_stream);
+	debugger;
+</script>

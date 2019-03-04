@@ -17,7 +17,7 @@ function cons_stream(h,t){
 }
 
 // 构造 空的流对象
-function empty_stream(x,y){
+function empty_stream(){
 	return 'none';
 }
 

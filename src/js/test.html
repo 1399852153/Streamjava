@@ -1,5 +1,6 @@
 <script type="text/javascript" src="stream.js"></script>
 <script type="text/javascript" src="stream-opt.js"></script>
+<script type="text/javascript" src="iterator.js"></script>
 
 <script type="text/javascript">
 	function isOdd(val){
@@ -30,6 +31,8 @@
 </script>
 
 <script type="text/javascript">
+
+/*
 	var array = [1,2,3,4,5];
 	var stream1 = array_to_stream(array);
 	
@@ -53,4 +56,33 @@
       return map_stream(function(item){return item+1},stream);
   },stream_to_stream);
 	debugger;
+*/
+</script>
+
+<script type="text/javascript">
+/*
+debugger;
+	var int_stream = stream_enumerate_interval(1,3);
+	
+	var h = head(int_stream);
+	var t = tail(int_stream);
+	debugger;	
+	h = head(t);
+	t = tail(t);
+	debugger;	
+	h = head(t);
+	t = tail(t);
+	debugger;	
+	h = head(t);
+	t = tail(t);
+debugger;	
+*/
+</script>
+<script type="text/javascript">
+debugger;
+	var int_stream = integer_staring_from(0);
+	while(true){
+		console.log(head(int_stream));
+		int_stream = tail(int_stream);
+	}
 </script>

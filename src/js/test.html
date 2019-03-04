@@ -47,6 +47,10 @@
 						     cons_stream(stream3,
 										 empty_stream())));
 	
-	var flatStream = flatten_stream(stream_to_stream);
+	// var flatStream = flatten_stream(stream_to_stream);
+
+  var flatStream = flatten_map_stream(function(stream){
+      return map_stream(function(item){return item+1},stream);
+  },stream_to_stream);
 	debugger;
 </script>

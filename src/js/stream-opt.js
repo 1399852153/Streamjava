@@ -75,3 +75,10 @@ function flatten_stream(stream_in_stream){
 		stream_in_stream
 	)
 }
+
+// stream flattenMap
+function flatten_map_stream(mapper,stream_in_stream){
+    return flatten_stream(
+            map_stream(mapper,stream_in_stream)
+    );
+}

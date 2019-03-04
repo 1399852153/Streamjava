@@ -1,8 +1,18 @@
+function delay(fn){
+	return function(){
+		return fn();
+	}
+}
+
+function force(fn){
+	return fn();
+}
+
 // 构造 流对象
 function cons_stream(h,t){
 	return {
 		head : h,
-		tail : t
+		tail : delay(t)
 	}
 }
 
@@ -23,5 +33,5 @@ function head(stream){
 
 // 获得流对象的尾部
 function tail(stream){
-	return stream.tail;
+	return force(stream.tail);
 }

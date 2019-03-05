@@ -16,14 +16,26 @@ function filter_stream(predicate,stream){
         return empty_stream();
     }
 
-    if(predicate(head(stream))){
-        return cons_stream(
-                head(stream),
-                filter_stream(predicate,tail(stream))
-            );
-    }else{
-        return filter_stream(predicate,tail(stream));
-    }
+    return cons_stream(
+            head(stream),
+            function(){
+            	debugger;
+            	let h = head(stream);
+                if(predicate(h)){
+                    let ok = cons_stream(
+                            head(stream),
+                            function(){
+                                return filter_stream(predicate,tail(stream));
+                            }
+                    );
+                    return ok;
+                }else{
+                    let not_ok = filter_stream(predicate,tail(stream));
+
+                    return not_ok;
+                }
+            }
+	);
 }
 
 // stream accumulate 操作
@@ -69,13 +81,16 @@ function flatten_map_stream(mapper,stream_in_stream){
 
 // limit 截断方法
 function limit(num,stream){
-	if(num < 0){
+	if(num <= 0){
 		return empty_stream();
 	}
 
+	let h = head(stream);
+	let t = limit(num-1,tail(stream));
+
 	let newStream = {
-		head : head(stream),
-		tail : limit(num-1,tail(stream))
+		head : h,
+		tail : t
 	};
 	return newStream;
 }

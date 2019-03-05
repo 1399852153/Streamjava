@@ -6,6 +6,10 @@
 	function isOdd(val){
 		return (val % 2 != 0);
 	}
+
+  function isDivideBySeven(val){
+      return (val % 7 == 0);
+  }
 	
 	function square(val){
 		return val * val;
@@ -79,9 +83,20 @@ debugger;
 */
 </script>
 <script type="text/javascript">
-debugger;
-	let int_stream = integer_staring_from(0);
-	let limit_stream = limit(15,int_stream);
+  debugger;
+	// let int_stream = stream_enumerate_interval(0,10000);
+
+	let int_stream = integer_staring_from(100);
+  debugger;
+
+  let filtered = filter_stream(isDivideBySeven,int_stream);
+
+  debugger;
+  let limit_stream = limit(10,filtered);
+
+  // let limit_stream = limit(10,filter_stream(isOdd,int_stream));
+
+  // let limit_stream = limit(10,int_stream);
 debugger;
 
 </script>

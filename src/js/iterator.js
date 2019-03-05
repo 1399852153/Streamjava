@@ -1,13 +1,13 @@
 function stream_enumerate_interval(low,high){
 	if(low > high){
-		return empty_stream;
+		return empty_stream();
 	}
 	
 	return cons_stream(
 		low,
 		function(){
 			return stream_enumerate_interval(low + 1,high);
-		}	
+		}
 	);
 }
 

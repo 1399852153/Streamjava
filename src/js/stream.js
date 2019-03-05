@@ -4,15 +4,15 @@ function delay(fn){
 	}
 }
 
-function force(fn){
-	return fn();
+function force(delayed_fn){
+	return delayed_fn();
 }
 
 // 构造 流对象
-function cons_stream(h,t){
+function cons_stream(h,nextFn){
 	return {
 		head : h,
-		tail : delay(t)
+		tail : delay(nextFn)
 	}
 }
 

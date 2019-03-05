@@ -1,19 +1,3 @@
-// 数组转stream
-function array_to_stream(array,start,end){
-    if(start == null && end == null){
-        return array_to_stream(array,0,array.length-1);
-    }
-
-    if(array.length == 0 || start > end){
-        return empty_stream();
-    }
-
-    return cons_stream(
-            array[start],
-            array_to_stream(array,start+1,end)
-    );
-}
-
 // stream map 操作
 function map_stream(mapper,stream){
     if(is_empty_stream(stream)){
@@ -81,4 +65,17 @@ function flatten_map_stream(mapper,stream_in_stream){
     return flatten_stream(
             map_stream(mapper,stream_in_stream)
     );
+}
+
+// limit 截断方法
+function limit(num,stream){
+	if(num < 0){
+		return empty_stream();
+	}
+
+	let newStream = {
+		head : head(stream),
+		tail : limit(num-1,tail(stream))
+	};
+	return newStream;
 }

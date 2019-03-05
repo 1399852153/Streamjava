@@ -16,24 +16,27 @@ function filter_stream(predicate,stream){
         return empty_stream();
     }
 
+    function filter(predicate,stream){
+        let h = head(stream);
+        if(predicate(h)){
+            let ok = cons_stream(
+                    head(stream),
+                    function(){
+                        return filter(predicate,tail(stream));
+                    }
+            );
+            return ok;
+        }else{
+            let not_ok = filter(predicate,tail(stream));
+
+            return not_ok;
+        }
+	}
+
     return cons_stream(
             head(stream),
             function(){
-            	debugger;
-            	let h = head(stream);
-                if(predicate(h)){
-                    let ok = cons_stream(
-                            head(stream),
-                            function(){
-                                return filter_stream(predicate,tail(stream));
-                            }
-                    );
-                    return ok;
-                }else{
-                    let not_ok = filter_stream(predicate,tail(stream));
-
-                    return not_ok;
-                }
+            	return filter(predicate,stream);
             }
 	);
 }

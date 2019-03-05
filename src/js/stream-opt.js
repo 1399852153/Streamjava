@@ -6,15 +6,15 @@ function map_stream(mapper,stream){
 
     return cons_stream(
         mapper(head(stream)),
-        map_stream(mapper,tail(stream))
+        function(){
+        	return map_stream(mapper,tail(stream));
+		}
     );
 }
 
 // stream filter 操作
 function filter_stream(predicate,stream){
-    if(is_empty_stream(stream)){
-        return empty_stream();
-    }
+    if(is_empty_stream(stream)){return empty_stream();}
 
     function filter(predicate,stream){
         let h = head(stream);
@@ -32,7 +32,6 @@ function filter_stream(predicate,stream){
             return not_ok;
         }
 	}
-
     return cons_stream(
             head(stream),
             function(){

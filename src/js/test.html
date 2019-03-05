@@ -89,10 +89,11 @@ debugger;
 	let int_stream = integer_staring_from(100);
   debugger;
 
-  let filtered = filter_stream(isDivideBySeven,int_stream);
+  // let filtered = filter_stream(isDivideBySeven,int_stream);
+  let mapped = map_stream(square,int_stream);
 
   debugger;
-  let limit_stream = limit(3,filtered);
+  let limit_stream = limit(3,mapped);
 
   // let limit_stream = limit(10,filter_stream(isOdd,int_stream));
 

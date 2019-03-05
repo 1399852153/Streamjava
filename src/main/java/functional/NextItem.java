@@ -7,7 +7,7 @@ import stream.Stream;
  * on 2019/3/5.
  */
 @FunctionalInterface
-public interface NextItem {
+public interface NextItem<T> {
 
-    Stream next();
+     Stream<T> apply();
 }

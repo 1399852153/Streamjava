@@ -1,13 +1,13 @@
 // stream map 操作
-function map_stream(mapper,stream){
+function map_stream(map,stream){
     if(is_empty_stream(stream)){
         return empty_stream();
     }
 
     return cons_stream(
-        mapper(head(stream)),
+        map(head(stream)),
         function(){
-        	return map_stream(mapper,tail(stream));
+        	return map_stream(map,tail(stream));
 		}
     );
 }
@@ -75,9 +75,9 @@ function flatten_stream(stream_in_stream){
 }
 
 // stream flattenMap
-function flatten_map_stream(mapper,stream_in_stream){
+function flatten_map_stream(map,stream_in_stream){
     return flatten_stream(
-            map_stream(mapper,stream_in_stream)
+            map_stream(map,stream_in_stream)
     );
 }
 

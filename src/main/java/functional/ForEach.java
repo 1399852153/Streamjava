@@ -9,5 +9,5 @@ package functional;
 @FunctionalInterface
 public interface ForEach <T>{
 
-    void forEach(T item);
+    void apply(T item);
 }

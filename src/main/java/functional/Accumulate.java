@@ -8,5 +8,5 @@ package functional;
  */
 public interface Accumulate <T>{
 
-    T accumulate(T t1, T t2);
+    T apply(T t1, T t2);
 }

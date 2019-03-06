@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import second.stream.Stream;
 import second.stream.StreamGenerator;
 

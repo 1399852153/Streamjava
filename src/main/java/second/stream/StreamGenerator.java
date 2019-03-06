@@ -11,10 +11,10 @@ public class StreamGenerator {
             return StreamInterface.makeEmptyStream();
         }
 
-        Stream<Integer> intStream = new Stream<>(
-                n,
-                new Process(()->getIntegerStream(n-1))
-        );
+        Stream<Integer> intStream = new Stream.Builder<Integer>()
+            .head(n)
+            .process(new Process(()->getIntegerStream(n-1)))
+            .build();
 
         return intStream;
     }

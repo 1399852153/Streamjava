@@ -44,6 +44,7 @@ public interface StreamInterface<T> {
      * @return 空stream
      * */
     static <T> Stream<T> makeEmptyStream(){
-        return new Stream<>(true);
+        return new Stream.Builder<T>()
+            .isEnd(true).build();
     }
 }

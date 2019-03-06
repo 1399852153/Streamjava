@@ -7,7 +7,7 @@ import second.stream.Stream;
  * @Date 2019/3/6
  */
 @FunctionalInterface
-public interface EvalFunction {
+public interface EvalFunction<T> {
 
-    Stream apply();
+    Stream<T> apply();
 }

@@ -6,18 +6,18 @@ import second.functional.EvalFunction;
  * @Author xiongyx
  * @Date 2019/3/6
  */
-public class Process {
+public class Process<T> {
 
-    Process last;
+    Process<T> last;
 
-    EvalFunction evalFunction;
+    EvalFunction<T> evalFunction;
 
-    public Process(Process last, EvalFunction evalFunction) {
+    public Process(Process<T> last, EvalFunction<T> evalFunction) {
         this.last = last;
         this.evalFunction = evalFunction;
     }
 
-    public Process(EvalFunction evalFunction) {
+    public Process(EvalFunction<T> evalFunction) {
         this.evalFunction = evalFunction;
     }
 }

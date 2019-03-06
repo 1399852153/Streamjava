@@ -1,5 +1,6 @@
 package stream;
 
+import functional.Accumulate;
 import functional.ForEach;
 import functional.Map;
 import functional.NextItem;
@@ -19,36 +20,7 @@ public class Stream <T> implements StreamInterface<T>{
 
     private boolean isEnd;
 
-    /**
-     * 是否被求值过
-     * */
-    private boolean evaled;
-
     private NextItem<T> eval;
-
-    public T getHead() {
-        return head;
-    }
-
-    public void setHead(T head) {
-        this.head = head;
-    }
-
-    public Stream<T> getTail() {
-        return tail;
-    }
-
-    public void setTail(Stream<T> tail) {
-        this.tail = tail;
-    }
-
-    public NextItem<T> getEval() {
-        return eval;
-    }
-
-    public void setEval(NextItem<T> eval) {
-        this.eval = eval;
-    }
 
     //====================================构造函数===============================
 
@@ -72,17 +44,27 @@ public class Stream <T> implements StreamInterface<T>{
 
     @Override
     public <R> Stream<R> map(Map<R,T> mapper){
-        return map(mapper,this);
+        Stream<R> lazy = new Stream<>(()-> map(mapper,this));
+        return lazy;
     }
 
     @Override
     public Stream<T> filter(Predicate<T> predicate){
-
         return new Stream<>();
     }
 
     @Override
+    public Stream<T> limit(int n) {
+        return limit(n,this);
+    }
+
+    @Override
     public void forEach(ForEach<T> forEach){
+    }
+
+    @Override
+    public <R> R reduce(R initVal,Accumulate<R,T> accumulator) {
+        return reduce(initVal,accumulator,this.eval.apply());
     }
 
     //=====================================私有方法=====================================
@@ -93,24 +75,38 @@ public class Stream <T> implements StreamInterface<T>{
         }
 
         R head = mapper.apply(stream.head);
-        Stream tail = new Stream<>(
-                ()-> map(mapper,stream.force()
-                ));
-
-
-        Stream newStream = new Stream(
-                head,
-                tail
+        Stream<R> tail = new Stream<>(
+            ()-> map(mapper,stream.force())
         );
-        return newStream;
+        return new Stream<>(head, tail);
     }
 
-    private void delay(NextItem<T> nextItem){
+    private Stream<T> limit(int n, Stream<T> stream){
+        if(n <= 0){
+            return StreamInterface.makeEmptyStream();
+        }
 
+        T head = stream.head;
+
+        Stream<T> tail = limit(n-1,stream.force());
+
+        return new Stream<>(head,tail);
     }
 
-    private Stream force(){
-        return this.tail.eval.apply();
+    private <R> R reduce(R initVal,Accumulate<R,T> accumulator,Stream<T> stream){
+        if(isEmptyStream(stream)){
+            return initVal;
+        }
+
+        T head = stream.head;
+        R tail = reduce(initVal,accumulator,stream.force());
+
+        return accumulator.apply(tail,head);
+    }
+
+    private Stream<T> force(){
+        Stream<T> eval = this.tail.eval.apply();
+        return eval;
     }
 
     private static boolean isEmptyStream(Stream stream){

@@ -4,19 +4,18 @@ import first.functional.Accumulate;
 import first.functional.ForEach;
 import first.functional.Map;
 import first.functional.Predicate;
-import second.functional.EvalFunction;
 
 /**
  * @Author xiongyx
  * @Date 2019/3/6
  */
-public class Stream <T> implements StreamInterface<T>{
+public class Stream <T> implements StreamInterface<T> {
 
     //===============================属性================================
 
     private T head;
 
-    private Stream tail;
+    private Stream<T> tail;
 
     private boolean isEnd;
 
@@ -24,18 +23,36 @@ public class Stream <T> implements StreamInterface<T>{
 
     //==============================构造方法===============================
 
+    public static class Builder<T>{
+        private Stream<T> target;
 
-    public Stream(T head, Process process) {
-        this.head = head;
-        this.process = process;
-    }
+        public Builder() {
+            this.target = new Stream<>();
+        }
 
-    public Stream(boolean isEnd) {
-        this.isEnd = isEnd;
-    }
+        public Builder<T> head(T head){
+            target.head = head;
+            return this;
+        }
 
-    public Stream(Process process) {
-        this.process = process;
+        public Builder<T> tail(Stream<T> tail){
+            target.tail = tail;
+            return this;
+        }
+
+        public Builder<T> isEnd(boolean isEnd){
+            target.isEnd = isEnd;
+            return this;
+        }
+
+        public Builder<T> process(Process process){
+            target.process = process;
+            return this;
+        }
+
+        public Stream<T> build(){
+            return target;
+        }
     }
 
     //=================================API实现==============================
@@ -45,7 +62,9 @@ public class Stream <T> implements StreamInterface<T>{
         Process lastProcess = this.process;
 
         // 求值链条 加入一个新的process map
-        return new Stream<>(new Process(lastProcess,()-> map(mapper,this)));
+        return new Stream.Builder<R>()
+            .process(new Process(lastProcess,()-> map(mapper,this)))
+            .build();
     }
 
     @Override
@@ -53,7 +72,9 @@ public class Stream <T> implements StreamInterface<T>{
         Process lastProcess = this.process;
 
         // 求值链条 加入一个新的process filter
-        return new Stream<>(new Process(lastProcess,()-> filter(predicate,this)));
+        return new Stream.Builder<T>()
+            .process(new Process(lastProcess,()-> filter(predicate,this)))
+            .build();
     }
 
     @Override
@@ -78,8 +99,14 @@ public class Stream <T> implements StreamInterface<T>{
             return StreamInterface.makeEmptyStream();
         }
 
+        R head = mapper.apply(stream.head);
+        Stream<R> tail = map(mapper,stream.process.evalFunction.apply());
+
         // todo map实现
-        return null;
+        return new Stream.Builder<R>()
+            .head(head)
+            .tail(tail)
+            .build();
     }
 
     private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){

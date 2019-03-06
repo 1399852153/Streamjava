@@ -1,23 +1,35 @@
 // stream map 操作
-function map_stream(map,stream){
-    if(is_empty_stream(stream)){
-        return empty_stream();
-    }
+function map_stream(mapper,stream){
+    let lazy = function(){
+		return map(mapper,stream);
+	}
+	
+	return lazy;
 
-    return cons_stream(
-        map(head(stream)),
-        function(){
-        	return map_stream(map,tail(stream));
+	function map(mapper,stream){
+		if(is_empty_stream(stream)){
+			return empty_stream();
 		}
-    );
+		
+		return cons_stream(
+			mapper(head(stream)),
+			function(){return map_stream(mapper,tail(stream));}
+		)	
+	}
 }
 
 // stream filter 操作
 function filter_stream(predicate,stream){
-    if(is_empty_stream(stream)){return empty_stream();}
-
-    function filter(predicate,stream){
-        let h = head(stream);
+	
+	return filter(predicate,stream);
+	
+	
+	function filter(predicate,stream){
+		if(is_empty_stream(stream)){
+			return empty_stream();
+		}
+		
+		let h = head(stream);
         if(predicate(h)){
             let ok = cons_stream(
                     head(stream),
@@ -32,12 +44,6 @@ function filter_stream(predicate,stream){
             return not_ok;
         }
 	}
-    return cons_stream(
-            head(stream),
-            function(){
-            	return filter(predicate,stream);
-            }
-	);
 }
 
 // stream accumulate 操作

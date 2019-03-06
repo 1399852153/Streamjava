@@ -83,21 +83,10 @@ debugger;
 */
 </script>
 <script type="text/javascript">
-  debugger;
-	// let int_stream = stream_enumerate_interval(0,10000);
-
-	let int_stream = integer_staring_from(100);
-  debugger;
-
-  // let filtered = filter_stream(isDivideBySeven,int_stream);
-  let mapped = map_stream(square,int_stream);
-
-  debugger;
-  let limit_stream = limit(3,mapped);
-
-  // let limit_stream = limit(10,filter_stream(isOdd,int_stream));
-
-  // let limit_stream = limit(10,int_stream);
-debugger;
+	debugger;
+	
+	var result = filter_stream(isOdd,stream_enumerate_interval(0,100));
+		
+	debugger;
 
 </script>

@@ -19,7 +19,7 @@ public class Stream <T> implements StreamInterface<T> {
 
     private boolean isEnd;
 
-    private Process<T> process;
+    private Process process;
 
     //==============================构造方法===============================
 
@@ -60,21 +60,31 @@ public class Stream <T> implements StreamInterface<T> {
     @Override
     public <R> Stream<R> map(Map<R, T> mapper) {
         Process lastProcess = this.process;
+        this.process = new Process(
+                ()->{
+                    Stream stream = lastProcess.eval();
+                    return map(mapper,stream);
+                }
+        );
 
         // 求值链条 加入一个新的process map
         return new Stream.Builder<R>()
-            .process(new Process(lastProcess,()-> map(mapper,this)))
-            .build();
+                .process(this.process)
+                .build();
     }
 
     @Override
     public Stream<T> filter(Predicate<T> predicate) {
         Process lastProcess = this.process;
+        this.process = new Process(
+                ()-> {
+                    Stream stream = lastProcess.eval();
+                    return filter(predicate,stream);
+                }
+        );
 
         // 求值链条 加入一个新的process filter
-        return new Stream.Builder<T>()
-            .process(new Process(lastProcess,()-> filter(predicate,this)))
-            .build();
+        return this;
     }
 
     @Override
@@ -94,23 +104,17 @@ public class Stream <T> implements StreamInterface<T> {
 
     //===============================私有方法====================================
 
-    private Stream<T> eval(){
-        return this.process.evalFunction.apply();
-    }
-
     private <R> Stream<R> map(Map<R, T> mapper,Stream<T> stream){
         if(isEmptyStream(stream)){
             return StreamInterface.makeEmptyStream();
         }
 
         R head = mapper.apply(stream.head);
-        Stream<R> tail = map(mapper,stream.process.evalFunction.apply());
 
-        // todo map实现
         return new Stream.Builder<R>()
-            .head(head)
-            .tail(tail)
-            .build();
+                .head(head)
+                .process(new Process(()->map(mapper,stream.eval())))
+                .build();
     }
 
     private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){
@@ -118,8 +122,16 @@ public class Stream <T> implements StreamInterface<T> {
             return StreamInterface.makeEmptyStream();
         }
 
-        // todo filter实现
-        return null;
+        if(predicate.isOK(stream.head)){
+            Stream<T> ok = new Stream.Builder<T>()
+                    .head(stream.head)
+                    .process(new Process(()->filter(predicate,stream.eval())))
+                    .build();
+            return ok;
+        }else{
+            Stream<T> not_ok = filter(predicate,stream.eval());
+            return not_ok;
+        }
     }
 
     private <R> R reduce(R initVal,Accumulate<R,T> accumulator,Stream<T> stream){
@@ -128,13 +140,14 @@ public class Stream <T> implements StreamInterface<T> {
         }
 
         T head = stream.head;
+        R result = reduce(initVal,accumulator,stream.eval());
 
-//        Stream<T> tail = reduce(initVal,accumulator,stream.eval());
+        // reduce实现
+        return accumulator.apply(result,head);
+    }
 
-
-
-        // todo reduce实现
-        return null;
+    private Stream<T> eval(){
+        return this.process.eval();
     }
 
     private static boolean isEmptyStream(Stream stream){

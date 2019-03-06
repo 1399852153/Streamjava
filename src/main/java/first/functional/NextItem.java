@@ -1,6 +1,6 @@
-package functional;
+package first.functional;
 
-import stream.Stream;
+import first.stream.Stream;
 
 /**
  * @Author xiongyx

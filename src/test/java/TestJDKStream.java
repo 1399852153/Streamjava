@@ -12,7 +12,7 @@ public class TestJDKStream {
 
     public static void main(String[] args){
         Stream<Integer> stream = Stream.of(1,2,3,4,5);
-//        stream = stream.map(TestJDKStream::square);
+        stream = stream.map(TestJDKStream::square);
 //        Stream<Integer> zero = square.limit(2);
         Optional<Integer> aa = stream.reduce((a,b)-> a+b);
         System.out.println(aa);

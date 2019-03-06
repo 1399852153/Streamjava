@@ -44,13 +44,20 @@ public class Stream <T> implements StreamInterface<T>{
 
     @Override
     public <R> Stream<R> map(Map<R,T> mapper){
-        Stream<R> lazy = new Stream<>(()-> map(mapper,this));
+        Stream<R> lazy = new Stream<>(
+            () -> map(mapper,this)
+        );
+
         return lazy;
     }
 
     @Override
     public Stream<T> filter(Predicate<T> predicate){
-        return new Stream<>();
+        Stream<T> lazy = new Stream<>(
+            () -> filter(predicate,this)
+        );
+
+        return lazy;
     }
 
     @Override
@@ -79,6 +86,20 @@ public class Stream <T> implements StreamInterface<T>{
             ()-> map(mapper,stream.force())
         );
         return new Stream<>(head, tail);
+    }
+
+    private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){
+        if(isEmptyStream(stream)){
+            return StreamInterface.makeEmptyStream();
+        }
+
+        if(predicate.isOK(stream.head)){
+            Stream<T> ok = new Stream<>(head,filter(predicate,stream.force()));
+            return ok;
+        }else{
+            Stream<T> not_ok =  filter(predicate,stream.force());
+            return not_ok;
+        }
     }
 
     private Stream<T> limit(int n, Stream<T> stream){

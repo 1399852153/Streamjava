@@ -101,8 +101,8 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     @Override
-    public void forEach(ForEach<T> forEach) {
-
+    public void forEach(ForEach<T> consumer) {
+        forEach(consumer,this.eval());
     }
 
     @Override
@@ -163,6 +163,15 @@ public class Stream <T> implements StreamInterface<T> {
                 .head(stream.head)
                 .process(new Process(()->limit(num-1,stream.eval())))
                 .build();
+    }
+
+    private void forEach(ForEach<T> consumer,Stream<T> stream){
+        if(isEmptyStream(stream)){
+            return;
+        }
+
+        consumer.apply(stream.head);
+        forEach(consumer,stream.eval());
     }
 
     private Stream<T> eval(){

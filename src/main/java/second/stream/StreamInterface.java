@@ -31,7 +31,7 @@ public interface StreamInterface<T> {
      * 遍历
      * 终止操作
      * */
-    void forEach(ForEach<T> forEach);
+    void forEach(ForEach<T> consumer);
 
     /**
      * 浓缩

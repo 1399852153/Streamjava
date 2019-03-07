@@ -16,9 +16,10 @@ public class TestStream2 {
 //        intStream = intStream.map(TestStream2::square);
 //        intStream = intStream.limit(3);
 
-        Integer sum = intStream.reduce(0,(v1,v2) -> v1 + v2);
+//        Integer sum = intStream.reduce(0,(v1,v2) -> v1 + v2);
+//        System.out.println(sum);
 
-        System.out.println(sum);
+        intStream.forEach(System.out::print);
     }
 
     private static boolean idOdd(int num){

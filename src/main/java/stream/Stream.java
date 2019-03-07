@@ -90,22 +90,28 @@ public class Stream <T> implements StreamInterface<T> {
                 }
         );
 
+        // 求值链条 加入一个新的process limit
         return this;
     }
 
     @Override
     public void forEach(ForEach<T> consumer) {
+        // 终结操作 直接开始求值
         forEach(consumer,this.eval());
     }
 
     @Override
     public <R> R reduce(R initVal, Accumulate<R, T> accumulator) {
+        // 终结操作 直接开始求值
         return reduce(initVal,accumulator,this.eval());
     }
 
     @Override
     public <R, A> R collect(Collector<T, A, R> collector) {
-        A result = collect(collector,this);
+        // 终结操作 直接开始求值
+        A result = collect(collector,this.eval());
+
+        // 通过finish方法进行收尾
         return collector.finisher().apply(result);
     }
 

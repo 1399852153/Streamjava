@@ -89,7 +89,15 @@ public class Stream <T> implements StreamInterface<T> {
 
     @Override
     public Stream<T> limit(int n) {
-        return null;
+        Process lastProcess = this.process;
+        this.process = new Process(
+                ()-> {
+                    Stream stream = lastProcess.eval();
+                    return limit(n,stream);
+                }
+        );
+
+        return this;
     }
 
     @Override
@@ -144,6 +152,17 @@ public class Stream <T> implements StreamInterface<T> {
 
         // reduce实现
         return accumulator.apply(result,head);
+    }
+
+    private Stream<T> limit(int num,Stream<T> stream){
+        if(num == 0){
+            return StreamInterface.makeEmptyStream();
+        }
+
+        return new Stream.Builder<T>()
+                .head(stream.head)
+                .process(new Process(()->limit(num-1,stream.eval())))
+                .build();
     }
 
     private Stream<T> eval(){

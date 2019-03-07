@@ -12,11 +12,6 @@ public class Process {
 
     EvalFunction evalFunction;
 
-    public Process(Process next, EvalFunction evalFunction) {
-        this.next = next;
-        this.evalFunction = evalFunction;
-    }
-
     public Process(EvalFunction evalFunction) {
         this.evalFunction = evalFunction;
     }

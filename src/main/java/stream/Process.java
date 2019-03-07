@@ -1,6 +1,6 @@
-package second.stream;
+package stream;
 
-import second.functional.EvalFunction;
+import function.EvalFunction;
 
 /**
  * @Author xiongyx

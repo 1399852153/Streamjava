@@ -1,9 +1,9 @@
-package second.stream;
+package stream;
 
-import first.functional.Accumulate;
-import first.functional.ForEach;
-import first.functional.Map;
-import first.functional.Predicate;
+import function.Accumulate;
+import function.ForEach;
+import function.Map;
+import function.Predicate;
 
 
 /**

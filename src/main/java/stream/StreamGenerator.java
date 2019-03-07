@@ -1,4 +1,4 @@
-package second.stream;
+package stream;
 
 /**
  * @Author xiongyx

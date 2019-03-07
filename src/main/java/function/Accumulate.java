@@ -1,4 +1,4 @@
-package first.functional;
+package function;
 
 /**
  * @Author xiongyx

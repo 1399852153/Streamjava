@@ -1,4 +1,5 @@
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -12,6 +13,7 @@ public class TestJDKStream {
 //        first.stream = first.stream.map(TestJDKStream::square);
 
         Stream<String> strStream = stream.map(TestJDKStream::toStr);
+        stream.collect(Collectors.toList());
 //        Stream<Integer> zero = square.limit(2);
         Optional<Integer> aa = stream.reduce((a,b)-> a+b);
         System.out.println(aa);

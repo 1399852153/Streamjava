@@ -2,7 +2,7 @@ package stream;
 
 import function.Accumulate;
 import function.ForEach;
-import function.Map;
+import function.Function;
 import function.Predicate;
 
 /**
@@ -14,8 +14,6 @@ public class Stream <T> implements StreamInterface<T> {
     //===============================属性================================
 
     private T head;
-
-    private Stream<T> tail;
 
     private boolean isEnd;
 
@@ -32,11 +30,6 @@ public class Stream <T> implements StreamInterface<T> {
 
         public Builder<T> head(T head){
             target.head = head;
-            return this;
-        }
-
-        public Builder<T> tail(Stream<T> tail){
-            target.tail = tail;
             return this;
         }
 
@@ -58,7 +51,7 @@ public class Stream <T> implements StreamInterface<T> {
     //=================================API实现==============================
 
     @Override
-    public <R> Stream<R> map(Map<R, T> mapper) {
+    public <R> Stream<R> map(Function<R, T> mapper) {
         Process lastProcess = this.process;
         this.process = new Process(
                 ()->{
@@ -110,10 +103,16 @@ public class Stream <T> implements StreamInterface<T> {
         return reduce(initVal,accumulator,this.eval());
     }
 
+    @Override
+    public <R, A> R collect(Collector<T, A, R> collector) {
+        A result = collect(collector,this);
+        return collector.finisher().apply(result);
+    }
+
     //===============================私有方法====================================
 
-    private <R> Stream<R> map(Map<R, T> mapper,Stream<T> stream){
-        if(isEmptyStream(stream)){
+    private <R> Stream<R> map(Function<R, T> mapper,Stream<T> stream){
+        if(stream.isEmptyStream()){
             return StreamInterface.makeEmptyStream();
         }
 
@@ -126,7 +125,7 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){
-        if(isEmptyStream(stream)){
+        if(stream.isEmptyStream()){
             return StreamInterface.makeEmptyStream();
         }
 
@@ -143,7 +142,7 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     private <R> R reduce(R initVal,Accumulate<R,T> accumulator,Stream<T> stream){
-        if(isEmptyStream(stream)){
+        if(stream.isEmptyStream()){
             return initVal;
         }
 
@@ -166,7 +165,7 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     private void forEach(ForEach<T> consumer,Stream<T> stream){
-        if(isEmptyStream(stream)){
+        if(stream.isEmptyStream()){
             return;
         }
 
@@ -174,11 +173,22 @@ public class Stream <T> implements StreamInterface<T> {
         forEach(consumer,stream.eval());
     }
 
+    private <R, A> A collect(Collector<T, A, R> collector,Stream<T> stream){
+        if(stream.isEmptyStream()){
+            return collector.supplier().get();
+        }
+
+        T head = stream.head;
+        A tail = collect(collector,stream.eval());
+
+        return collector.accumulator().apply(tail,head);
+    }
+
     private Stream<T> eval(){
         return this.process.eval();
     }
 
-    private static boolean isEmptyStream(Stream stream){
-        return stream.isEnd;
+    private boolean isEmptyStream(){
+        return this.isEnd;
     }
 }

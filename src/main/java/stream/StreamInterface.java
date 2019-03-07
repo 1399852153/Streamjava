@@ -2,7 +2,7 @@ package stream;
 
 import function.Accumulate;
 import function.ForEach;
-import function.Map;
+import function.Function;
 import function.Predicate;
 
 
@@ -15,7 +15,7 @@ public interface StreamInterface<T> {
     /**
      * 映射
      * */
-    <R> Stream<R> map(Map<R,T> mapper);
+    <R> Stream<R> map(Function<R,T> mapper);
 
     /**
      * 过滤
@@ -38,6 +38,12 @@ public interface StreamInterface<T> {
      * 终止操作
      * */
     <R> R reduce(R initVal,Accumulate<R,T> accumulator);
+
+    /**
+     * 收集
+     * 终止操作
+     * */
+    <R, A> R collect(Collector<T,A,R> collector);
 
     /**
      * 返回空的 first.stream

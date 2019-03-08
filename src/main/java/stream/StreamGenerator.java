@@ -18,4 +18,17 @@ public class StreamGenerator {
 
         return intStream;
     }
+
+    public static Stream<Integer> getIntegerStream(int low,int high){
+        if(low > high){
+            return StreamInterface.makeEmptyStream();
+        }
+
+        Stream<Integer> intStream = new Stream.Builder<Integer>()
+                .head(low)
+                .process(new Process(()->getIntegerStream(low+1,high)))
+                .build();
+
+        return intStream;
+    }
 }

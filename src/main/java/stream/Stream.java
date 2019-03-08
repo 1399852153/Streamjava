@@ -65,18 +65,20 @@ public class Stream <T> implements StreamInterface<T> {
 
     @Override
     public <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper) {
-        Process lastProcess = this.process;
-        this.process = new Process(
-            ()->{
-                Stream stream = lastProcess.eval();
-                return flatMap(mapper,stream);
-            }
-        );
+//        Process lastProcess = this.process;
+//        this.process = new Process(
+//            ()->{
+//                Stream stream = lastProcess.eval();
+//                return flatMap(mapper,stream);
+//            }
+//        );
+//
+//        // 求值链条 加入一个新的process map
+//        return new Stream.Builder<R>()
+//            .process(this.process)
+//            .build();
 
-        // 求值链条 加入一个新的process map
-        return new Stream.Builder<R>()
-            .process(this.process)
-            .build();
+        return null;
     }
 
     @Override
@@ -165,14 +167,31 @@ public class Stream <T> implements StreamInterface<T> {
                 .build();
     }
 
-    private <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper,Stream<T> stream) {
-        if(stream.isEmptyStream()){
+    private <R> Stream<R> flatMap(Function<R,T> mapper,Stream<Stream<T>> streamInStream) {
+        if(streamInStream.isEmptyStream()){
             return StreamInterface.makeEmptyStream();
         }
 
-        Stream head = mapper.apply(stream.head);
-
         return null;
+    }
+
+    public Stream<T> flatten(Stream<Stream<T>> streamInStream){
+
+        Stream<T> head = streamInStream.head;
+        Process tail = new Process(()-> streamInStream.eval());
+
+        return append(head,tail.eval());
+    }
+
+    private Stream<T> append(Stream<T> stream1,Stream<T> stream2){
+        if(stream1.isEmptyStream()){
+            return stream2;
+        }
+
+        return new Stream.Builder<T>()
+                .head(stream1.head)
+                .process(new Process(()->append(stream1.eval(),stream2)))
+                .build();
     }
 
     private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){
@@ -234,7 +253,7 @@ public class Stream <T> implements StreamInterface<T> {
         return collector.accumulator().apply(tail,head);
     }
 
-    private T max(Comparator<T> comparator,Stream<T> stream,T max){
+    private static <T> T max(Comparator<T> comparator,Stream<T> stream,T max){
         if(stream.isEnd){
             return max;
         }
@@ -250,7 +269,7 @@ public class Stream <T> implements StreamInterface<T> {
         }
     }
 
-    private T min(Comparator<T> comparator,Stream<T> stream,T min){
+    private static <T> T min(Comparator<T> comparator,Stream<T> stream,T min){
         if(stream.isEnd){
             return min;
         }
@@ -265,26 +284,6 @@ public class Stream <T> implements StreamInterface<T> {
             return min(comparator,stream.eval(),min);
         }
     }
-
-    private Stream<T> append(Stream<T> stream1,Stream<T> stream2){
-        if(stream1.isEmptyStream()){
-            return stream2;
-        }
-
-        return new Stream.Builder<T>()
-            .head(stream1.head)
-            .process(new Process(()->append(stream1.eval(),stream2)))
-            .build();
-    }
-
-//    private Stream<T> flatten(Stream<T> stream_in_stream){
-////        return reduce(StreamInterface.makeEmptyStream(), new Accumulate<Stream<T>, T>() {
-////            @Override
-////            public Stream<T> apply(Stream<T> t1, T t2) {
-////                return append(t1,t2);
-////            }
-////        });
-//    }
 
     private Stream<T> eval(){
         return this.process.eval();

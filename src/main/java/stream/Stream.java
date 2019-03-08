@@ -1,6 +1,7 @@
 package stream;
 
 import function.Accumulate;
+import function.Comparator;
 import function.ForEach;
 import function.Function;
 import function.Predicate;
@@ -115,6 +116,28 @@ public class Stream <T> implements StreamInterface<T> {
         return collector.finisher().apply(result);
     }
 
+    @Override
+    public T max(Comparator<T> comparator) {
+        Stream<T> eval = this.eval();
+
+        if(eval.isEmptyStream()){
+            return null;
+        }else{
+            return max(comparator,eval,eval.head);
+        }
+    }
+
+    @Override
+    public T min(Comparator<T> comparator) {
+        Stream<T> eval = this.eval();
+
+        if(eval.isEmptyStream()){
+            return null;
+        }else{
+            return min(comparator,eval,eval.head);
+        }
+    }
+
     //===============================私有方法====================================
 
     private <R> Stream<R> map(Function<R, T> mapper,Stream<T> stream){
@@ -188,6 +211,38 @@ public class Stream <T> implements StreamInterface<T> {
         A tail = collect(collector,stream.eval());
 
         return collector.accumulator().apply(tail,head);
+    }
+
+    private T max(Comparator<T> comparator,Stream<T> stream,T max){
+        if(stream.isEnd){
+            return max;
+        }
+
+        T head = stream.head;
+        // head 和 max 进行比较
+        if(comparator.compare(head,max) > 0){
+            // head 较大 作为新的max传入
+            return max(comparator,stream.eval(),head);
+        }else{
+            // max 较大 不变
+            return max(comparator,stream.eval(),max);
+        }
+    }
+
+    private T min(Comparator<T> comparator,Stream<T> stream,T min){
+        if(stream.isEnd){
+            return min;
+        }
+
+        T head = stream.head;
+        // head 和 min 进行比较
+        if(comparator.compare(head,min) < 0){
+            // head 较小 作为新的min传入
+            return max(comparator,stream.eval(),head);
+        }else{
+            // min 较小 不变
+            return max(comparator,stream.eval(),min);
+        }
     }
 
     private Stream<T> eval(){

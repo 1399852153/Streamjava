@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -9,14 +12,32 @@ import java.util.stream.Stream;
 public class TestJDKStream {
 
     public static void main(String[] args){
-        Stream<Integer> stream = Stream.of(1,2,3,4,5);
-//        first.stream = first.stream.map(TestJDKStream::square);
+        List<String> teamIndia = Arrays.asList("Virat", "Dhoni", "Jadeja");
+        List<String> teamAustralia = Arrays.asList("Warner", "Watson", "Smith");
+        List<String> teamEngland = Arrays.asList("Alex", "Bell", "Broad");
+        List<String> teamNewZeland = Arrays.asList("Kane", "Nathan", "Vettori");
+        List<String> teamSouthAfrica = Arrays.asList("AB", "Amla", "Faf");
+        List<String> teamWestIndies = Arrays.asList("Sammy", "Gayle", "Narine");
+        List<String> teamSriLanka = Arrays.asList("Mahela", "Sanga", "Dilshan");
+        List<String> teamPakistan = Arrays.asList("Misbah", "Afridi", "Shehzad");
 
-        Stream<String> strStream = stream.map(TestJDKStream::toStr);
-        stream.collect(Collectors.toList());
-//        Stream<Integer> zero = square.limit(2);
-        Optional<Integer> aa = stream.reduce((a,b)-> a+b);
-        System.out.println(aa);
+        List<List<String>> playersInWorldCup2016 = new ArrayList<>();
+        playersInWorldCup2016.add(teamIndia);
+        playersInWorldCup2016.add(teamAustralia);
+        playersInWorldCup2016.add(teamEngland);
+        playersInWorldCup2016.add(teamNewZeland);
+        playersInWorldCup2016.add(teamSouthAfrica);
+        playersInWorldCup2016.add(teamWestIndies);
+        playersInWorldCup2016.add(teamSriLanka);
+        playersInWorldCup2016.add(teamPakistan);
+
+        // Now let's do this in Java 8 using FlatMap
+        List<String> flatMapList = playersInWorldCup2016.stream()
+            .flatMap(pList -> pList.stream())
+            .collect(Collectors.toList());
+
+        System.out.println("List of all Players using Java 8");
+        System.out.println(flatMapList);
     }
 
     private static Integer square(int num){

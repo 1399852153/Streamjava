@@ -68,6 +68,22 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     @Override
+    public <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper) {
+        Process lastProcess = this.process;
+        this.process = new Process(
+            ()->{
+                Stream stream = lastProcess.eval();
+                return flatMap(mapper,stream);
+            }
+        );
+
+        // 求值链条 加入一个新的process map
+        return new Stream.Builder<R>()
+            .process(this.process)
+            .build();
+    }
+
+    @Override
     public Stream<T> filter(Predicate<T> predicate) {
         Process lastProcess = this.process;
         this.process = new Process(
@@ -151,6 +167,16 @@ public class Stream <T> implements StreamInterface<T> {
                 .head(head)
                 .process(new Process(()->map(mapper,stream.eval())))
                 .build();
+    }
+
+    private <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper,Stream<T> stream) {
+        if(stream.isEmptyStream()){
+            return StreamInterface.makeEmptyStream();
+        }
+
+        Stream head = mapper.apply(stream.head);
+
+        return null;
     }
 
     private Stream<T> filter(Predicate<T> predicate,Stream<T> stream){
@@ -243,6 +269,21 @@ public class Stream <T> implements StreamInterface<T> {
             // min 较小 不变
             return min(comparator,stream.eval(),min);
         }
+    }
+
+    private Stream<T> append(Stream<T> stream1,Stream<T> stream2){
+        if(stream1.isEmptyStream()){
+            return stream2;
+        }
+
+        return new Stream.Builder<T>()
+            .head(stream1.head)
+            .process(new Process(()->append(stream1.eval(),stream2)))
+            .build();
+    }
+
+    private Stream<T> flatten(Stream<Stream<T>> stream_in_stream){
+        return null;
     }
 
     private Stream<T> eval(){

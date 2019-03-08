@@ -1,10 +1,5 @@
-import function.Accumulate;
-import function.Supplier;
-import stream.Collector;
 import stream.Stream;
 import stream.StreamGenerator;
-
-import java.util.function.Function;
 
 /**
  * @Author xiongyx

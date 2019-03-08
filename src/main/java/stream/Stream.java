@@ -1,10 +1,6 @@
 package stream;
 
-import function.Accumulate;
-import function.Comparator;
-import function.ForEach;
-import function.Function;
-import function.Predicate;
+import function.*;
 
 /**
  * @Author xiongyx
@@ -118,7 +114,7 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     @Override
-    public <R> R reduce(R initVal, Accumulate<R, T> accumulator) {
+    public <R> R reduce(R initVal, BiFunction<R, R, T> accumulator) {
         // 终结操作 直接开始求值
         return reduce(initVal,accumulator,this.eval());
     }
@@ -196,7 +192,7 @@ public class Stream <T> implements StreamInterface<T> {
         }
     }
 
-    private <R> R reduce(R initVal,Accumulate<R,T> accumulator,Stream<T> stream){
+    private <R> R reduce(R initVal, BiFunction<R,R,T> accumulator, Stream<T> stream){
         if(stream.isEmptyStream()){
             return initVal;
         }
@@ -204,7 +200,6 @@ public class Stream <T> implements StreamInterface<T> {
         T head = stream.head;
         R result = reduce(initVal,accumulator,stream.eval());
 
-        // reduce实现
         return accumulator.apply(result,head);
     }
 
@@ -282,9 +277,14 @@ public class Stream <T> implements StreamInterface<T> {
             .build();
     }
 
-    private Stream<T> flatten(Stream<Stream<T>> stream_in_stream){
-        return null;
-    }
+//    private Stream<T> flatten(Stream<T> stream_in_stream){
+////        return reduce(StreamInterface.makeEmptyStream(), new Accumulate<Stream<T>, T>() {
+////            @Override
+////            public Stream<T> apply(Stream<T> t1, T t2) {
+////                return append(t1,t2);
+////            }
+////        });
+//    }
 
     private Stream<T> eval(){
         return this.process.eval();

@@ -1,6 +1,6 @@
 package stream;
 
-import function.Accumulate;
+import function.BiFunction;
 import function.Supplier;
 
 import java.util.function.Function;
@@ -13,7 +13,7 @@ public interface Collector<T, A, R> {
 
     Supplier<A> supplier();
 
-    Accumulate<A, T> accumulator();
+    BiFunction<A, A, T> accumulator();
 
     Function<A, R> finisher();
 }

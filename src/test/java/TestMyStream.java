@@ -15,12 +15,12 @@ public class TestMyStream {
         intStream = intStream.map(TestMyStream::square);
 //        intStream = intStream.limit(3);
 
-        int max = intStream.min(Integer::compareTo);
+//        int max = intStream.min(Integer::compareTo);
+//
+//        System.out.println(max);
 
-        System.out.println(max);
-
-//        Integer sum = intStream.reduce(0,(v1,v2) -> v1 + v2);
-//        System.out.println(sum);
+        Integer sum = intStream.reduce(0,(v1,v2) -> v1 + v2);
+        System.out.println(sum);
 
 //        intStream.forEach(System.out::print);
 

@@ -38,6 +38,8 @@ public class TestJDKStream {
 
         System.out.println("List of all Players using Java 8");
         System.out.println(flatMapList);
+
+//        playersInWorldCup2016.stream().reduce();
     }
 
     private static Integer square(int num){

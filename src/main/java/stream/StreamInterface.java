@@ -1,10 +1,6 @@
 package stream;
 
-import function.Accumulate;
-import function.Comparator;
-import function.ForEach;
-import function.Function;
-import function.Predicate;
+import function.*;
 
 
 /**
@@ -46,7 +42,7 @@ public interface StreamInterface<T> {
      * 浓缩
      * eval
      * */
-    <R> R reduce(R initVal,Accumulate<R,T> accumulator);
+    public <R> R reduce(R initVal, BiFunction<R, R, T> accumulator);
 
     /**
      * 收集

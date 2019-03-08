@@ -20,29 +20,33 @@ public class TestMyStream {
         intStream = intStream.map(TestMyStream::square);
 //        intStream = intStream.limit(3);
 
+        int max = intStream.min(Integer::compareTo);
+
+        System.out.println(max);
+
 //        Integer sum = intStream.reduce(0,(v1,v2) -> v1 + v2);
 //        System.out.println(sum);
 
 //        intStream.forEach(System.out::print);
 
-        Integer sum = intStream.collect(new Collector<Integer, Integer, Integer>() {
-            @Override
-            public Accumulate<Integer, Integer> accumulator() {
-                return (t1, t2) -> t1 + t2;
-            }
-
-            @Override
-            public Supplier<Integer> supplier() {
-                return () -> 10;
-            }
-
-            @Override
-            public Function<Integer, Integer> finisher() {
-                return integer -> integer;
-            }
-        });
-        System.out.println(sum);
-
+//        Integer sum = intStream.collect(new Collector<Integer, Integer, Integer>() {
+//            @Override
+//            public Accumulate<Integer, Integer> accumulator() {
+//                return (t1, t2) -> t1 + t2;
+//            }
+//
+//            @Override
+//            public Supplier<Integer> supplier() {
+//                return () -> 10;
+//            }
+//
+//            @Override
+//            public Function<Integer, Integer> finisher() {
+//                return integer -> integer;
+//            }
+//        });
+//        System.out.println(sum);
+//
 //        intStream.forEach(System.out::print);
     }
 

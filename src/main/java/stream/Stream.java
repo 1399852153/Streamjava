@@ -238,10 +238,10 @@ public class Stream <T> implements StreamInterface<T> {
         // head 和 min 进行比较
         if(comparator.compare(head,min) < 0){
             // head 较小 作为新的min传入
-            return max(comparator,stream.eval(),head);
+            return min(comparator,stream.eval(),head);
         }else{
             // min 较小 不变
-            return max(comparator,stream.eval(),min);
+            return min(comparator,stream.eval(),min);
         }
     }
 

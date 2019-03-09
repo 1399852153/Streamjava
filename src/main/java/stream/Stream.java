@@ -64,21 +64,19 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     @Override
-    public <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper) {
-//        Process lastProcess = this.process;
-//        this.process = new Process(
-//            ()->{
-//                Stream stream = lastProcess.eval();
-//                return flatMap(mapper,stream);
-//            }
-//        );
-//
-//        // 求值链条 加入一个新的process map
-//        return new Stream.Builder<R>()
-//            .process(this.process)
-//            .build();
+    public <R> Stream<R> flatMap(Function<R,T> mapper) {
+        Process lastProcess = this.process;
+        this.process = new Process(
+            ()->{
+                Stream stream = lastProcess.eval();
+                return flatMap(mapper,stream);
+            }
+        );
 
-        return null;
+        // 求值链条 加入一个新的process map
+        return new Stream.Builder<R>()
+            .process(this.process)
+            .build();
     }
 
     @Override
@@ -154,7 +152,7 @@ public class Stream <T> implements StreamInterface<T> {
 
     //===============================私有方法====================================
 
-    private <R> Stream<R> map(Function<R, T> mapper,Stream<T> stream){
+    private static <R,T> Stream<R> map(Function<R, T> mapper,Stream<T> stream){
         if(stream.isEmptyStream()){
             return StreamInterface.makeEmptyStream();
         }
@@ -172,15 +170,32 @@ public class Stream <T> implements StreamInterface<T> {
             return StreamInterface.makeEmptyStream();
         }
 
-        return null;
+        Stream<R> result = map(mapper,flatten(streamInStream));
+
+        return result;
     }
 
     public Stream<T> flatten(Stream<Stream<T>> streamInStream){
+        return flatten(StreamInterface.makeEmptyStream(),streamInStream.eval());
+    }
+
+    private Stream<T> flatten(Stream<T> flattenResult,Stream<Stream<T>> streamInStream){
+        if(streamInStream.isEmptyStream()){
+            return flattenResult;
+        }
 
         Stream<T> head = streamInStream.head;
-        Process tail = new Process(()-> streamInStream.eval());
-
-        return append(head,tail.eval());
+        if(head.isEmptyStream()){
+            Stream<T> appendResult = append(flattenResult,head);
+            appendResult.process = new Process(()-> flatten(appendResult,streamInStream));
+            return appendResult;
+        }else {
+            Stream<Stream<T>> next = streamInStream.eval();
+            Stream<T> nextHead = next.head;
+            Stream<T> appendResult = append(flattenResult, nextHead);
+            appendResult.process = new Process(() -> flatten(appendResult, streamInStream));
+            return appendResult;
+        }
     }
 
     private Stream<T> append(Stream<T> stream1,Stream<T> stream2){

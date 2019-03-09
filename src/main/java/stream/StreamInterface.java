@@ -18,7 +18,7 @@ public interface StreamInterface<T> {
     /**
      * 扁平化 映射
      * */
-    <R> Stream<R> flatMap(Function<? extends Stream<? extends R>,? super T> mapper);
+    <R> Stream<R> flatMap(Function<R, T> mapper);
 
     /**
      * 过滤

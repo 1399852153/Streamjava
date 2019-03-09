@@ -17,10 +17,10 @@ public class FlatMapTest {
 
     private static void testCollectionGenerator(){
         List<String> teamIndia = Arrays.asList("11", "12", "13");
-        List<String> teamAustralia = Arrays.asList("21", "22", "23");
+        List<String> teamAustralia = Arrays.asList("21", "22", "23","24");
         List<String> teamEngland = Arrays.asList("31", "32", "33");
         List<String> teamNewZeland = Arrays.asList("41", "42", "43");
-        List<String> teamSouthAfrica = Arrays.asList("51", "52", "53");
+        List<String> teamSouthAfrica = Arrays.asList("52", "53");
 
         List<List<String>> playersInWorldCup2016 = new ArrayList<>();
         playersInWorldCup2016.add(teamIndia);
@@ -31,8 +31,8 @@ public class FlatMapTest {
 
         CollectionStreamGenerator.getListStream(playersInWorldCup2016)
                 .flatMap(CollectionStreamGenerator::getListStream)
-                .filter(item->item.endsWith("2"))
-                .limit(3)
+                .filter(item->item.endsWith("4"))
+                .limit(2)
                 .forEach(System.out::println);
     }
 }

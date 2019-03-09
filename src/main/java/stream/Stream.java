@@ -212,7 +212,7 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     private Stream<T> limit(int num,Stream<T> stream){
-        if(num == 0){
+        if(num == 0 || stream.isEmptyStream()){
             return StreamInterface.makeEmptyStream();
         }
 

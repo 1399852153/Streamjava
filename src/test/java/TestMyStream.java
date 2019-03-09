@@ -8,12 +8,12 @@ import stream.genetator.IntegerStreamGenerator;
 public class TestMyStream {
 
     public static void main(String[] args){
-        Stream<Integer> intStream = IntegerStreamGenerator.getIntegerStream(1,10);
+        Stream<Integer> intStream = IntegerStreamGenerator.getIntegerStream(1,2);
 
-        intStream = intStream.filter(TestMyStream::idOdd);
-        intStream = intStream.map(TestMyStream::scaleTwo);
+//        intStream = intStream.filter(TestMyStream::idOdd);
+//        intStream = intStream.map(TestMyStream::scaleTwo);
 //        intStream = intStream.map(TestMyStream::square);
-//        intStream = intStream.limit(3);
+        intStream = intStream.limit(3);
 
 //        int max = intStream.min(Integer::compareTo);
 //

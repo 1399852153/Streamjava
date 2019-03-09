@@ -51,10 +51,10 @@ function accumulate_stream(combiner,initVal,stream){
 	if(is_empty_stream(stream)){
 		return initVal;
 	}
-	
+
 	let v1 = head(stream);
 	let v2 = accumulate_stream(combiner,initVal,tail(stream));
-	
+
 	return combiner(v1,v2);
 }
 

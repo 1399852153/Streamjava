@@ -16,14 +16,11 @@ public class FlatMapTest {
     }
 
     private static void testCollectionGenerator(){
-        List<String> teamIndia = Arrays.asList("Virat", "Dhoni", "Jadeja");
-        List<String> teamAustralia = Arrays.asList("Warner", "Watson", "Smith");
-        List<String> teamEngland = Arrays.asList("Alex", "Bell", "Broad");
-        List<String> teamNewZeland = Arrays.asList("Kane", "Nathan", "Vettori");
-        List<String> teamSouthAfrica = Arrays.asList("AB", "Amla", "Faf");
-        List<String> teamWestIndies = Arrays.asList("Sammy", "Gayle", "Narine");
-        List<String> teamSriLanka = Arrays.asList("Mahela", "Sanga", "Dilshan");
-        List<String> teamPakistan = Arrays.asList("Misbah", "Afridi", "Shehzad");
+        List<String> teamIndia = Arrays.asList("11", "12", "13");
+        List<String> teamAustralia = Arrays.asList("21", "22", "23");
+        List<String> teamEngland = Arrays.asList("31", "32", "33");
+        List<String> teamNewZeland = Arrays.asList("41", "42", "43");
+        List<String> teamSouthAfrica = Arrays.asList("51", "52", "53");
 
         List<List<String>> playersInWorldCup2016 = new ArrayList<>();
         playersInWorldCup2016.add(teamIndia);
@@ -31,12 +28,12 @@ public class FlatMapTest {
         playersInWorldCup2016.add(teamEngland);
         playersInWorldCup2016.add(teamNewZeland);
         playersInWorldCup2016.add(teamSouthAfrica);
-        playersInWorldCup2016.add(teamWestIndies);
-        playersInWorldCup2016.add(teamSriLanka);
-        playersInWorldCup2016.add(teamPakistan);
 
-        Stream<List<String>> stream = CollectionStreamGenerator.getListStream(playersInWorldCup2016);
-        stream.flatMap(CollectionStreamGenerator::getListStream);
-        stream.forEach(System.out::println);
+        Stream<String> stringStream = CollectionStreamGenerator.getListStream(playersInWorldCup2016)
+                .flatMap(CollectionStreamGenerator::getListStream)
+                .filter(item->item.endsWith("2"))
+                .limit(3);
+
+        stringStream.forEach(System.out::println);
     }
 }

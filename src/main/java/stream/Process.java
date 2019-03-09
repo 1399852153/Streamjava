@@ -8,8 +8,6 @@ import function.EvalFunction;
  */
 public class Process {
 
-    Process next;
-
     EvalFunction evalFunction;
 
     public Process(EvalFunction evalFunction) {
@@ -18,7 +16,6 @@ public class Process {
 
     public Stream eval(){
         Stream result = evalFunction.apply();
-
         return result;
     }
 }

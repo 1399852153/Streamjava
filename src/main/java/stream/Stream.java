@@ -166,23 +166,20 @@ public class Stream <T> implements StreamInterface<T> {
     }
 
     private static <R,T> Stream<R> flatMap(Function<? extends Stream<R>,T> mapper,Stream<R> headStream, Stream<T> stream){
-        if(stream.isEmptyStream()){
-            return StreamInterface.makeEmptyStream();
-        }
-
         if(headStream.isEmptyStream()){
-            T head = stream.head;
-            Stream<R> newHeadStream = mapper.apply(head);
+            if(stream.isEmptyStream()){
+                return StreamInterface.makeEmptyStream();
+            }else{
+                T outerHead = stream.head;
+                Stream<R> newHeadStream = mapper.apply(outerHead);
 
-            return new Stream.Builder<R>()
-                    .head(newHeadStream.eval().head)
-                    .process(new Process(()-> flatMap(mapper,newHeadStream,stream.eval())))
-                    .build();
+                return flatMap(mapper,newHeadStream.eval(),stream.eval());
+            }
         }else{
             return new Stream.Builder<R>()
-                    .head(headStream.eval().head)
-                    .process(new Process(()-> flatMap(mapper,headStream,stream)))
-                    .build();
+                        .head(headStream.head)
+                        .process(new Process(()-> flatMap(mapper,headStream.eval(),stream)))
+                        .build();
         }
     }
 
@@ -283,5 +280,13 @@ public class Stream <T> implements StreamInterface<T> {
 
     private boolean isEmptyStream(){
         return this.isEnd;
+    }
+
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "head=" + head +
+                ", isEnd=" + isEnd +
+                '}';
     }
 }

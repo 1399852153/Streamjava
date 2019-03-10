@@ -1,48 +1,46 @@
 package stream.genetator;
 
-import stream.Process;
+import stream.MyStream;
+import stream.NextItemEvalProcess;
 import stream.Stream;
-import stream.StreamInterface;
 
 /**
  * @Author xiongyx
  * on 2019/3/5.
+ *
+ * 整数流生成器
  */
 public class IntegerStreamGenerator {
 
-    public static Stream<Integer> getIntegerStream(int n){
-        if(n < 0){
-            return StreamInterface.makeEmptyStream();
-        }
-
-        Stream<Integer> intStream = new Stream.Builder<Integer>()
-                .head(n)
-                .process(new Process(()->getIntegerStream(n-1)))
-                .build();
-
-        return intStream;
-    }
-
-    public static Stream<Integer> getIntegerStream(int low,int high){
+    /**
+     * 获得一个有限的整数流 介于[low-high]之间
+     * @param low 下界
+     * @param high 上界
+     * */
+    public static MyStream<Integer> getIntegerStream(int low, int high){
         return getIntegerStreamInner(low,high,true);
     }
 
-    private static Stream<Integer> getIntegerStreamInner(int low,int high,boolean isStart){
+    /**
+     * 递归函数。配合getIntegerStream(int low,int high)
+     * */
+    private static MyStream<Integer> getIntegerStreamInner(int low, int high, boolean isStart){
         if(low > high){
-            return StreamInterface.makeEmptyStream();
+            // 到达边界条件，返回空的流
+            return Stream.makeEmptyStream();
         }
 
         if(isStart){
-            Stream<Integer> intStream = new Stream.Builder<Integer>()
-                    .process(new Process(()->getIntegerStreamInner(low,high,false)))
+            return new MyStream.Builder<Integer>()
+                    .process(new NextItemEvalProcess(()->getIntegerStreamInner(low,high,false)))
                     .build();
-            return intStream;
         }else{
-            Stream<Integer> intStream = new Stream.Builder<Integer>()
+            return new MyStream.Builder<Integer>()
+                    // 当前元素 low
                     .head(low)
-                    .process(new Process(()->getIntegerStreamInner(low+1,high,false)))
+                    // 下一个元素 low+1
+                    .process(new NextItemEvalProcess(()->getIntegerStreamInner(low+1,high,false)))
                     .build();
-            return intStream;
         }
     }
 }

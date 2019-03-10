@@ -29,7 +29,7 @@ public class FlatMapTest {
         playersInWorldCup2016.add(teamNewZeland);
         playersInWorldCup2016.add(teamSouthAfrica);
 
-        List list = CollectionStreamGenerator.getListStream(playersInWorldCup2016)
+        List<String> list = CollectionStreamGenerator.getListStream(playersInWorldCup2016)
                 .flatMap(CollectionStreamGenerator::getListStream)
                 .filter(item->item.endsWith("2"))
                 .limit(2)

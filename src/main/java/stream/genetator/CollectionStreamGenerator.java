@@ -1,8 +1,8 @@
 package stream.genetator;
 
-import stream.Process;
+import stream.MyStream;
+import stream.NextItemEvalProcess;
 import stream.Stream;
-import stream.StreamInterface;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,29 +10,40 @@ import java.util.List;
 /**
  * @Author xiongyx
  * on 2019/3/9.
+ *
+ * 集合流生成器
  */
 public class CollectionStreamGenerator {
 
-    public static <T> Stream<T> getListStream(List<T> list){
+    /**
+     * 将一个List转化为stream流
+     * */
+    public static <T> MyStream<T> getListStream(List<T> list){
         return getListStream(list.iterator(),true);
     }
 
-    private static <T> Stream<T> getListStream(Iterator<T> iterator,boolean isStart){
+    /**
+     * 递归函数
+     * @param iterator list 集合的迭代器
+     * @param isStart 是否是第一次迭代
+     * */
+    private static <T> MyStream<T> getListStream(Iterator<T> iterator, boolean isStart){
         if(!iterator.hasNext()){
-            return StreamInterface.makeEmptyStream();
+            // 不存在迭代的下一个元素，返回空的流
+            return Stream.makeEmptyStream();
         }
 
         if(isStart){
-            Stream<T> stream = new Stream.Builder<T>()
-                    .process(new Process(()-> getListStream(iterator,false)))
+            // 初始化，只需要设置 求值过程
+            return new MyStream.Builder<T>()
+                    .process(new NextItemEvalProcess(()-> getListStream(iterator,false)))
                     .build();
-            return stream;
         }else{
-            Stream<T> stream = new Stream.Builder<T>()
+            // 非初始化，设置head和接下来的求值过程
+            return new MyStream.Builder<T>()
                     .head(iterator.next())
-                    .process(new Process(()-> getListStream(iterator,false)))
+                    .process(new NextItemEvalProcess(()-> getListStream(iterator,false)))
                     .build();
-            return stream;
         }
     }
 }

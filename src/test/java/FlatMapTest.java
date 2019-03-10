@@ -1,5 +1,5 @@
-import stream.Stream;
 import stream.genetator.CollectionStreamGenerator;
+import stream.util.CollectUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,10 +29,13 @@ public class FlatMapTest {
         playersInWorldCup2016.add(teamNewZeland);
         playersInWorldCup2016.add(teamSouthAfrica);
 
-        CollectionStreamGenerator.getListStream(playersInWorldCup2016)
+        List list = CollectionStreamGenerator.getListStream(playersInWorldCup2016)
                 .flatMap(CollectionStreamGenerator::getListStream)
-                .filter(item->item.endsWith("4"))
+                .filter(item->item.endsWith("2"))
                 .limit(2)
-                .forEach(System.out::println);
+                .collect(CollectUtils.toList());
+
+        list.forEach(System.out::println);
+//                .forEach(System.out::println);
     }
 }

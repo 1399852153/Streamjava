@@ -41,7 +41,7 @@ public interface Stream<T> {
 
     /**
      * 去重操作 lazy 惰性求值
-     * @return 一个新的流，其中的元素不重复(equals）
+     * @return 一个新的流，其中的元素不重复(!equals）
      * */
     MyStream<T> distinct();
 

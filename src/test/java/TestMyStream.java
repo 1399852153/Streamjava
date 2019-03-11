@@ -1,4 +1,7 @@
+import java.util.Arrays;
+import java.util.List;
 import stream.MyStream;
+import stream.genetator.CollectionStreamGenerator;
 import stream.genetator.IntegerStreamGenerator;
 
 /**
@@ -8,9 +11,11 @@ import stream.genetator.IntegerStreamGenerator;
 public class TestMyStream {
 
     public static void main(String[] args){
-        MyStream<Integer> intMyStream = IntegerStreamGenerator.getIntegerStream(1,2);
+        List<Integer> list = Arrays.asList(1,1,1,2,3,4,5,6,2,3,2);
 
-        intMyStream = intMyStream.limit(3);
+        MyStream<Integer> intMyStream = CollectionStreamGenerator.getListStream(list);
+
+        intMyStream = intMyStream.distinct();
 
         intMyStream.forEach(System.out::println);
     }

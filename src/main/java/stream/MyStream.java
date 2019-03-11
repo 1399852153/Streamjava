@@ -247,18 +247,21 @@ public class MyStream<T> implements Stream<T> {
     /**
      * 递归函数 配合API.distinct
      * */
-    private static <T> MyStream<T> distinct(Set<T> set,MyStream<T> myStream){
+    private static <T> MyStream<T> distinct(Set<T> distinctSet,MyStream<T> myStream){
         if(myStream.isEmptyStream()){
             return Stream.makeEmptyStream();
         }
 
-        if(!set.contains(myStream.head)){
+        if(!distinctSet.contains(myStream.head)){
+            // 加入集合
+            distinctSet.add(myStream.head);
+
             return new Builder<T>()
                 .head(myStream.head)
-                .process(new NextItemEvalProcess(()->distinct(set, myStream.eval())))
+                .process(new NextItemEvalProcess(()->distinct(distinctSet, myStream.eval())))
                 .build();
         }else{
-            return distinct(set, myStream.eval());
+            return distinct(distinctSet, myStream.eval());
         }
     }
 

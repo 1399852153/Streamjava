@@ -87,6 +87,20 @@ public interface Stream<T> {
     int count();
 
     /**
+     * 流中是否存在满足predicate的项
+     * @return true 存在 匹配项
+     *          false 不存在 匹配项
+     * */
+    boolean anyMatch(Predicate<? super T> predicate);
+
+    /**
+     * 流中的元素是否全部满足predicate
+     * @return true 全部满足
+     *          false 不全部满足
+     * */
+    boolean allMatch(Predicate<? super T> predicate);
+
+    /**
      * 返回空的 stream
      * @return 空stream
      * */

@@ -153,6 +153,7 @@ public class MyStream<T> implements Stream<T> {
 
     @Override
     public T max(Comparator<T> comparator) {
+        // 终结操作 直接开始求值
         MyStream<T> eval = this.eval();
 
         if(eval.isEmptyStream()){
@@ -164,6 +165,7 @@ public class MyStream<T> implements Stream<T> {
 
     @Override
     public T min(Comparator<T> comparator) {
+        // 终结操作 直接开始求值
         MyStream<T> eval = this.eval();
 
         if(eval.isEmptyStream()){
@@ -175,7 +177,20 @@ public class MyStream<T> implements Stream<T> {
 
     @Override
     public int count() {
+        // 终结操作 直接开始求值
         return count(this.eval(),0);
+    }
+
+    @Override
+    public boolean anyMatch(Predicate<? super T> predicate) {
+        // 终结操作 直接开始求值
+        return anyMatch(predicate,this.eval());
+    }
+
+    @Override
+    public boolean allMatch(Predicate<? super T> predicate) {
+        // 终结操作 直接开始求值
+        return allMatch(predicate,this.eval());
     }
 
     //===============================私有方法====================================
@@ -358,6 +373,44 @@ public class MyStream<T> implements Stream<T> {
 
         // count+1 进行递归
         return count(myStream.eval(),count+1);
+    }
+
+    /**
+     * 递归函数 配合API.anyMatch
+     * */
+    private static <T> boolean anyMatch(Predicate<? super T> predicate,MyStream<T> myStream){
+        if(myStream.isEmptyStream()){
+            // 截止末尾，不存在任何匹配项
+            return false;
+        }
+
+        // 谓词判断
+        if(predicate.satisfy(myStream.head)){
+            // 匹配 存在匹配项 返回true
+            return true;
+        }else{
+            // 不匹配，继续检查，直到存在匹配项
+            return anyMatch(predicate,myStream.eval());
+        }
+    }
+
+    /**
+     * 递归函数 配合API.anyMatch
+     * */
+    private static <T> boolean allMatch(Predicate<? super T> predicate,MyStream<T> myStream){
+        if(myStream.isEmptyStream()){
+            // 全部匹配
+            return true;
+        }
+
+        // 谓词判断
+        if(predicate.satisfy(myStream.head)){
+            // 当前项匹配，继续检查
+            return allMatch(predicate,myStream.eval());
+        }else{
+            // 存在不匹配的项，返回false
+            return false;
+        }
     }
 
     /**

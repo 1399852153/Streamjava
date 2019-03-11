@@ -10,20 +10,7 @@ public class TestMyStream {
     public static void main(String[] args){
         MyStream<Integer> intMyStream = IntegerStreamGenerator.getIntegerStream(1,2);
 
-//        intMyStream = intMyStream.filter(TestMyStream::idOdd);
-//        intMyStream = intMyStream.map(TestMyStream::scaleTwo);
-//        intMyStream = intMyStream.map(TestMyStream::square);
         intMyStream = intMyStream.limit(3);
-
-//        int max = intMyStream.min(Integer::compareTo);
-//
-//        System.out.println(max);
-
-//        Integer sum = intMyStream.reduce(0,(v1,v2) -> v1 + v2);
-//        System.out.println(sum);
-
-//        intMyStream.forEach(System.out::print);
-
 
         intMyStream.forEach(System.out::println);
     }

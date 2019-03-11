@@ -1,6 +1,8 @@
 package stream;
 
 import function.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @Author xiongyx
@@ -115,6 +117,20 @@ public class MyStream<T> implements Stream<T> {
     }
 
     @Override
+    public MyStream<T> distinct() {
+        NextItemEvalProcess lastNextItemEvalProcess = this.nextItemEvalProcess;
+        this.nextItemEvalProcess = new NextItemEvalProcess(
+            ()-> {
+                MyStream myStream = lastNextItemEvalProcess.eval();
+                return distinct(new HashSet<>(), myStream);
+            }
+        );
+
+        // 求值链条 加入一个新的process limit
+        return this;
+    }
+
+    @Override
     public void forEach(ForEach<T> consumer) {
         // 终结操作 直接开始求值
         forEach(consumer,this.eval());
@@ -199,7 +215,7 @@ public class MyStream<T> implements Stream<T> {
     /**
      * 递归函数 配合API.filter
      * */
-    private MyStream<T> filter(Predicate<T> predicate, MyStream<T> myStream){
+    private static <T> MyStream<T> filter(Predicate<T> predicate, MyStream<T> myStream){
         if(myStream.isEmptyStream()){
             return Stream.makeEmptyStream();
         }
@@ -215,23 +231,9 @@ public class MyStream<T> implements Stream<T> {
     }
 
     /**
-     * 递归函数 配合API.reduce
-     * */
-    private <R> R reduce(R initVal, BiFunction<R,R,T> accumulator, MyStream<T> myStream){
-        if(myStream.isEmptyStream()){
-            return initVal;
-        }
-
-        T head = myStream.head;
-        R result = reduce(initVal,accumulator, myStream.eval());
-
-        return accumulator.apply(result,head);
-    }
-
-    /**
      * 递归函数 配合API.limit
      * */
-    private MyStream<T> limit(int num, MyStream<T> myStream){
+    private static <T> MyStream<T> limit(int num, MyStream<T> myStream){
         if(num == 0 || myStream.isEmptyStream()){
             return Stream.makeEmptyStream();
         }
@@ -243,9 +245,27 @@ public class MyStream<T> implements Stream<T> {
     }
 
     /**
+     * 递归函数 配合API.distinct
+     * */
+    private static <T> MyStream<T> distinct(Set<T> set,MyStream<T> myStream){
+        if(myStream.isEmptyStream()){
+            return Stream.makeEmptyStream();
+        }
+
+        if(!set.contains(myStream.head)){
+            return new Builder<T>()
+                .head(myStream.head)
+                .process(new NextItemEvalProcess(()->distinct(set, myStream.eval())))
+                .build();
+        }else{
+            return distinct(set, myStream.eval());
+        }
+    }
+
+    /**
      * 递归函数 配合API.forEach
      * */
-    private void forEach(ForEach<T> consumer, MyStream<T> myStream){
+    private static <T> void forEach(ForEach<T> consumer, MyStream<T> myStream){
         if(myStream.isEmptyStream()){
             return;
         }
@@ -255,9 +275,23 @@ public class MyStream<T> implements Stream<T> {
     }
 
     /**
+     * 递归函数 配合API.reduce
+     * */
+    private static <R,T> R reduce(R initVal, BiFunction<R,R,T> accumulator, MyStream<T> myStream){
+        if(myStream.isEmptyStream()){
+            return initVal;
+        }
+
+        T head = myStream.head;
+        R result = reduce(initVal,accumulator, myStream.eval());
+
+        return accumulator.apply(result,head);
+    }
+
+    /**
      * 递归函数 配合API.collect
      * */
-    private <R, A> A collect(Collector<T, A, R> collector, MyStream<T> myStream){
+    private static <R, A, T> A collect(Collector<T, A, R> collector, MyStream<T> myStream){
         if(myStream.isEmptyStream()){
             return collector.supplier().get();
         }

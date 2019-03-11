@@ -40,6 +40,12 @@ public interface Stream<T> {
     MyStream<T> limit(int n);
 
     /**
+     * 去重操作 lazy 惰性求值
+     * @return 一个新的流，其中的元素不重复(equals）
+     * */
+    MyStream<T> distinct();
+
+    /**
      * 遍历 eval 强制求值
      * @param consumer 遍历逻辑
      * */

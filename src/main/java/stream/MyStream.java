@@ -173,6 +173,11 @@ public class MyStream<T> implements Stream<T> {
         }
     }
 
+    @Override
+    public int count() {
+        return count(this.eval(),0);
+    }
+
     //===============================私有方法====================================
 
     /**
@@ -341,6 +346,18 @@ public class MyStream<T> implements Stream<T> {
             // min 较小 不变
             return min(comparator, myStream.eval(),min);
         }
+    }
+
+    /**
+     * 递归函数 配合API.count
+     * */
+    private static <T> int count(MyStream<T> myStream, int count){
+        if(myStream.isEmptyStream()){
+            return count;
+        }
+
+        // count+1 进行递归
+        return count(myStream.eval(),count+1);
     }
 
     /**

@@ -17,7 +17,9 @@ public class TestMyStream {
 
         intMyStream = intMyStream.distinct();
 
-        intMyStream.forEach(System.out::println);
+        System.out.println(intMyStream.count());
+
+//        intMyStream.forEach(System.out::println);
     }
 
     private static boolean idOdd(int num){

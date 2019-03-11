@@ -81,6 +81,12 @@ public interface Stream<T> {
     T min(Comparator<T> comparator);
 
     /**
+     * 计数 eval 强制求值
+     * @return  当前流的个数
+     * */
+    int count();
+
+    /**
      * 返回空的 stream
      * @return 空stream
      * */

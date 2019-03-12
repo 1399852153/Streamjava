@@ -32,14 +32,14 @@ public class IntegerStreamGenerator {
 
         if(isStart){
             return new MyStream.Builder<Integer>()
-                    .process(new NextItemEvalProcess(()->getIntegerStreamInner(low,high,false)))
+                    .nextItemEvalProcess(new NextItemEvalProcess(()->getIntegerStreamInner(low,high,false)))
                     .build();
         }else{
             return new MyStream.Builder<Integer>()
                     // 当前元素 low
                     .head(low)
                     // 下一个元素 low+1
-                    .process(new NextItemEvalProcess(()->getIntegerStreamInner(low+1,high,false)))
+                    .nextItemEvalProcess(new NextItemEvalProcess(()->getIntegerStreamInner(low+1,high,false)))
                     .build();
         }
     }

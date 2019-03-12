@@ -18,7 +18,7 @@ public class MyStream<T> implements Stream<T> {
     private T head;
 
     /**
-     * 流的求值方法
+     * 流的下一项求值函数
      * */
     private NextItemEvalProcess nextItemEvalProcess;
 
@@ -44,7 +44,7 @@ public class MyStream<T> implements Stream<T> {
             return this;
         }
 
-        public Builder<T> process(NextItemEvalProcess nextItemEvalProcess){
+        public Builder<T> nextItemEvalProcess(NextItemEvalProcess nextItemEvalProcess){
             target.nextItemEvalProcess = nextItemEvalProcess;
             return this;
         }
@@ -68,7 +68,7 @@ public class MyStream<T> implements Stream<T> {
 
         // 求值链条 加入一个新的process map
         return new MyStream.Builder<R>()
-                .process(this.nextItemEvalProcess)
+                .nextItemEvalProcess(this.nextItemEvalProcess)
                 .build();
     }
 
@@ -84,7 +84,7 @@ public class MyStream<T> implements Stream<T> {
 
         // 求值链条 加入一个新的process map
         return new MyStream.Builder<R>()
-            .process(this.nextItemEvalProcess)
+            .nextItemEvalProcess(this.nextItemEvalProcess)
             .build();
     }
 
@@ -207,7 +207,7 @@ public class MyStream<T> implements Stream<T> {
 
         return new MyStream.Builder<R>()
                 .head(head)
-                .process(new NextItemEvalProcess(()->map(mapper, myStream.eval())))
+                .nextItemEvalProcess(new NextItemEvalProcess(()->map(mapper, myStream.eval())))
                 .build();
     }
 
@@ -227,7 +227,7 @@ public class MyStream<T> implements Stream<T> {
         }else{
             return new MyStream.Builder<R>()
                         .head(headMyStream.head)
-                        .process(new NextItemEvalProcess(()-> flatMap(mapper, headMyStream.eval(), myStream)))
+                        .nextItemEvalProcess(new NextItemEvalProcess(()-> flatMap(mapper, headMyStream.eval(), myStream)))
                         .build();
         }
     }
@@ -243,7 +243,7 @@ public class MyStream<T> implements Stream<T> {
         if(predicate.satisfy(myStream.head)){
             return new Builder<T>()
                     .head(myStream.head)
-                    .process(new NextItemEvalProcess(()->filter(predicate, myStream.eval())))
+                    .nextItemEvalProcess(new NextItemEvalProcess(()->filter(predicate, myStream.eval())))
                     .build();
         }else{
             return filter(predicate, myStream.eval());
@@ -260,7 +260,7 @@ public class MyStream<T> implements Stream<T> {
 
         return new MyStream.Builder<T>()
                 .head(myStream.head)
-                .process(new NextItemEvalProcess(()->limit(num-1, myStream.eval())))
+                .nextItemEvalProcess(new NextItemEvalProcess(()->limit(num-1, myStream.eval())))
                 .build();
     }
 
@@ -278,7 +278,7 @@ public class MyStream<T> implements Stream<T> {
 
             return new Builder<T>()
                 .head(myStream.head)
-                .process(new NextItemEvalProcess(()->distinct(distinctSet, myStream.eval())))
+                .nextItemEvalProcess(new NextItemEvalProcess(()->distinct(distinctSet, myStream.eval())))
                 .build();
         }else{
             return distinct(distinctSet, myStream.eval());

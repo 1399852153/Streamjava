@@ -15,11 +15,13 @@ public class TestMyStream {
 
         MyStream<Integer> intMyStream = CollectionStreamGenerator.getListStream(list);
 
-        intMyStream = intMyStream.distinct();
+//        intMyStream = intMyStream.distinct();
 
-        System.out.println(intMyStream.count());
+//        System.out.println(intMyStream.count());
 
 //        intMyStream.forEach(System.out::println);
+
+        System.out.println(intMyStream.anyMatch(item->item==6));
     }
 
     private static boolean idOdd(int num){

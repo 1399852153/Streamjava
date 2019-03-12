@@ -36,13 +36,13 @@ public class CollectionStreamGenerator {
         if(isStart){
             // 初始化，只需要设置 求值过程
             return new MyStream.Builder<T>()
-                    .process(new NextItemEvalProcess(()-> getListStream(iterator,false)))
+                    .nextItemEvalProcess(new NextItemEvalProcess(()-> getListStream(iterator,false)))
                     .build();
         }else{
             // 非初始化，设置head和接下来的求值过程
             return new MyStream.Builder<T>()
                     .head(iterator.next())
-                    .process(new NextItemEvalProcess(()-> getListStream(iterator,false)))
+                    .nextItemEvalProcess(new NextItemEvalProcess(()-> getListStream(iterator,false)))
                     .build();
         }
     }

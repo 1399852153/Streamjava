@@ -131,6 +131,20 @@ public class MyStream<T> implements Stream<T> {
     }
 
     @Override
+    public MyStream<T> peek(ForEach<T> consumer) {
+        NextItemEvalProcess lastNextItemEvalProcess = this.nextItemEvalProcess;
+        this.nextItemEvalProcess = new NextItemEvalProcess(
+            ()-> {
+                MyStream myStream = lastNextItemEvalProcess.eval();
+                return peek(consumer,myStream);
+            }
+        );
+
+        // 求值链条 加入一个新的process peek
+        return this;
+    }
+
+    @Override
     public void forEach(ForEach<T> consumer) {
         // 终结操作 直接开始求值
         forEach(consumer,this.eval());
@@ -283,6 +297,22 @@ public class MyStream<T> implements Stream<T> {
         }else{
             return distinct(distinctSet, myStream.eval());
         }
+    }
+
+    /**
+     * 递归函数 配合API.peek
+     * */
+    private static <T> MyStream<T> peek(ForEach<T> consumer,MyStream<T> myStream){
+        if(myStream.isEmptyStream()){
+            return Stream.makeEmptyStream();
+        }
+
+        consumer.apply(myStream.head);
+
+        return new MyStream.Builder<T>()
+            .head(myStream.head)
+            .nextItemEvalProcess(new NextItemEvalProcess(()->peek(consumer, myStream.eval())))
+            .build();
     }
 
     /**

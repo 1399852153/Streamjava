@@ -28,7 +28,10 @@ public class TestJDKStream {
             .flatMap(pList -> pList.stream())
                 .filter(item->item.endsWith("4"))
                 .limit(3)
+                .peek(System.out::println)
                 .collect(Collectors.toList())
                 .forEach(System.out::println);
+
+        Runnable r = ()->{};
     }
 }

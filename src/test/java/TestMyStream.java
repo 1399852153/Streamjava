@@ -24,7 +24,7 @@ public class TestMyStream {
         // 最终结果累加求和(初始值为0)
         Integer sum = limitStream.reduce(0,(i1,i2)-> i1+i2);
 
-        System.out.println(sum); // 56
+        System.out.println(sum); // 20
     }
 
     private static boolean idOdd(int num){
